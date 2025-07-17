@@ -205,7 +205,7 @@ app.get("/user_email",  async (req, res) => {
   const { emailParams } = req.query;
 
 
-  // Construct the query object to search for email if emailParams is provided
+  
   let query = {};
   if (emailParams) {
     query.email = { $regex: emailParams, $options: "i" }; // Case-insensitive search
@@ -292,29 +292,29 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
-// app.patch('/user_payment', async (req, res) => {
-//   const { badge } = req.body;
-//   const email = req.query.email;
+app.patch('/user_payment', async (req, res) => {
+  const { badge } = req.body;
+  const email = req.query.email;
 
-//   if (!email || !badge) {
-//     return res.status(400).send({ success: false, message: 'Email and badge required' });
-//   }
+  if (!email || !badge) {
+    return res.status(400).send({ success: false, message: 'Email and badge required' });
+  }
 
-//   try {
-//     const result = await usersCollection.updateOne(
-//       { email: email },
-//       { $set: { badge: badge } }
-//     );
+  try {
+    const result = await usersCollection.updateOne(
+      { email: email },
+      { $set: { badge: badge } }
+    );
 
-//     if (result.modifiedCount === 0) {
-//       return res.status(404).send({ success: false, message: 'User not found or badge already set' });
-//     }
+    if (result.modifiedCount === 0) {
+      return res.status(404).send({ success: false, message: 'User not found or badge already set' });
+    }
 
-//     res.send({ success: true, message: 'Badge updated successfully' });
-//   } catch (err) {
-//     res.status(500).send({ success: false, message: err.message });
-//   }
-// });
+    res.send({ success: true, message: 'Badge updated successfully' });
+  } catch (err) {
+    res.status(500).send({ success: false, message: err.message });
+  }
+});
 
 // end
 
