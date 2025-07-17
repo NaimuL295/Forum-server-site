@@ -12,7 +12,7 @@ const stripe = require('stripe')(process.env.PAYMENT_GATEWAY_KEY);
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({origin:["http://localhost:5173", "http://localhost:5174"],
+app.use(cors({origin:["https://b11-assigment-12.netlify.app","http://localhost:5173", "http://localhost:5174",],
 credentials:true,}));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.y2b3ywc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -42,7 +42,7 @@ const postsCollection = myFocus.collection('posts');
  
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
-  console.log(token,"ok");
+
   
   if (!token) {
     return res.status(401).send({ message: 'unauthorized access' })
@@ -317,11 +317,10 @@ app.patch('/user_payment', async (req, res) => {
 
 // end
 
-
-
 // role check
-app.get("/users/:email/role", verifyToken, async (req, res) => {
+app.get("/users/:email/role" ,async (req, res) => {
   const email = req.params.email;
+
 
   try {
     const user = await usersCollection.findOne({ email });
@@ -331,6 +330,9 @@ app.get("/users/:email/role", verifyToken, async (req, res) => {
     }
 
     res.json({ role: user.role || "user" }); 
+  //  console.log(res.json());
+    
+    
   } catch (error) {
     
     res.status(500).json({ error: "Internal server error" });
@@ -339,6 +341,8 @@ app.get("/users/:email/role", verifyToken, async (req, res) => {
 // check
 app.get("/users_/:email", verifyToken,verifyAdmin,  async (req, res) => {
   const email = req.params.email;
+  console.log(email);
+  
   try {
     const user = await usersCollection.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
