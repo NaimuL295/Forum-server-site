@@ -115,22 +115,22 @@ app.get("/posts/search", async (req, res) => {
 
 
 
-// app.delete("/comments/:id", async (req, res) => {
-//   const commentId = req.params.id;
+app.delete("/comments/:id", async (req, res) => {
+  const commentId = req.params.id;
 
-//   try {
-//     const result = await commentsCollection("comments").deleteOne({ _id: new ObjectId(commentId) });
+  try {
+    const result = await commentsCollection("comments").deleteOne({ _id: new ObjectId(commentId) });
 
-//     if (result.deletedCount === 1) {
-//       res.status(200).json({ message: "Comment deleted" });
-//     } else {
-//       res.status(404).json({ error: "Comment not found" });
-//     }
-//   } catch (error) {
+    if (result.deletedCount === 1) {
+      res.status(200).json({ message: "Comment deleted" });
+    } else {
+      res.status(404).json({ error: "Comment not found" });
+    }
+  } catch (error) {
    
-//     res.status(500).json({ error: "Internal server error" });
-//   }
-// });
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
 
