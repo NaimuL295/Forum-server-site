@@ -42,7 +42,7 @@ const postsCollection = myFocus.collection('posts');
  
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
-
+  console.log(token,"ok");
   
   if (!token) {
     return res.status(401).send({ message: 'unauthorized access' })
@@ -60,6 +60,7 @@ const verifyToken = (req, res, next) => {
   
 const verifyAdmin = async (req, res, next) => {
             const email = req.decoded.email;
+
             const query = { email }
             const user = await usersCollection.findOne(query);
             if (!user || user.role !== 'admin') {
@@ -69,25 +70,30 @@ const verifyAdmin = async (req, res, next) => {
         }
 
 
-app.post('/jwt',(req,res)=>{
- const {email}= req.body;
+app.post('/jwt', (req, res) => {
+ 
+  const { email } = req.body;
 
- if (!email) {
-   return res.status(400).send("Email is required")
- }
- const token=  jwt.sign(
-  {email},
-  process.env.JWT_ACCESS_SECRET,
-  {expiresIn:"4h"}
- )
 
- res.cookie("token",token,{
-  httpOnly:true,
-  secure:false,
-  //sameSite:"none"
- })
- res.send({success:true})
-})
+  if (!email) {
+    return res.status(400).send('Email is required');
+  }
+  const token = jwt.sign(
+    { email }, 
+    process.env.JWT_ACCESS_SECRET,  { expiresIn: '2h' }
+  );
+
+
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: true, 
+    sameSite:"none"
+    // domain: '.vercel.app',
+     //  path: '/',
+  });
+
+  res.send({ success: true });
+});
 
 
 // search
@@ -112,7 +118,6 @@ app.get("/posts/search", async (req, res) => {
 });
 
 
-
 app.delete("/comments/:id", async (req, res) => {
   const commentId = req.params.id;
 
@@ -129,9 +134,6 @@ app.delete("/comments/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
-
 
 
 app.post("/make/announcement", async (req, res) => {
@@ -319,7 +321,7 @@ app.patch('/user_payment', async (req, res) => {
 
 
 // role check
-app.get("/users/:email/role",verifyToken, async (req, res) => {
+app.get("/users/:email/role", verifyToken, async (req, res) => {
   const email = req.params.email;
 
   try {
