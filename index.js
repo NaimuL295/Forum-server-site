@@ -42,7 +42,7 @@ const postsCollection = myFocus.collection('posts');
  
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
- 
+  console.log(token,"ok");
   
   if (!token) {
     return res.status(401).send({ message: 'unauthorized access' })
@@ -134,7 +134,6 @@ app.delete("/comments/:id", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
 
 app.post("/make/announcement", async (req, res) => {
   const { authorName, authorImage, title, description } = req.body;
@@ -623,9 +622,11 @@ app.post("/user", async (req, res) => {
 run().catch(console.dir);
 
 
-app.get("/",(req,res)=>{
-res.send("server run")
-})                 
+app.get("/", (req, res) => {
+  res.json({ message: "API is running" });
+});
+
+
 
 
 app.listen(port, () => {
