@@ -445,17 +445,17 @@ app.get("/postsDetails/:id", async (req, res) => {
 });
 
 
-// app.patch("/posts/:id/vote", async (req, res) => {
-//   const { id } = req.params;
-//   const { type } = req.body;
+app.patch("/posts/:id/vote", async (req, res) => {
+  const { id } = req.params;
+  const { type } = req.body;
 
-//   const update = type === "up"
-//     ? { $inc: { upVote: 1 } }
-//     : { $inc: { downVote: 1 } };
+  const update = type === "up"
+    ? { $inc: { upVote: 1 } }
+    : { $inc: { downVote: 1 } };
 
-//   const result = await postsCollection.updateOne({ _id: new ObjectId(id) }, update);
-//   res.send(result);
-// });
+  const result = await postsCollection.updateOne({ _id: new ObjectId(id) }, update);
+  res.send(result);
+});
 
 // app.get("/comments/post/:postId", async (req, res) => {
 //   const { postId } = req.params;
