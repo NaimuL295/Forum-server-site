@@ -457,11 +457,11 @@ app.patch("/posts/:id/vote", async (req, res) => {
   res.send(result);
 });
 
-// app.get("/comments/post/:postId", async (req, res) => {
-//   const { postId } = req.params;
-//   const comments = await commentsCollection.find({ postId }).toArray();
-//   res.send(comments);
-// });
+app.get("/comments/post/:postId", async (req, res) => {
+  const { postId } = req.params;
+  const comments = await commentsCollection.find({ postId }).toArray();
+  res.send(comments);
+});
 
 // Add new comment
 app.post("/comments", async (req, res) => {
@@ -471,7 +471,7 @@ app.post("/comments", async (req, res) => {
   res.send(result);
 });
 
-Report a comment
+//Report a comment
 app.post("/comments/report/:commentId", async (req, res) => {
   const { commentId } = req.params;
   const { feedback } = req.body;
@@ -526,57 +526,57 @@ app.delete("/comments_remove/:commentId/:reportId", async (req, res) => {
 
 
 
-// app.get('/tags_data', async (req, res) => {
-//   try {
-//     const tags = await tagsCollection.find().toArray();
-//     res.status(200).json(tags);
-//   } catch (error) {
+app.get('/tags_data', async (req, res) => {
+  try {
+    const tags = await tagsCollection.find().toArray();
+    res.status(200).json(tags);
+  } catch (error) {
    
-//     res.status(500).json({ error: 'Failed to fetch tags' });
-//   }
-// });
+    res.status(500).json({ error: 'Failed to fetch tags' });
+  }
+});
 
 
 
 
 // Express route to get paginated + sorted posts
-// app.get("/posts", async (req, res) => {
-//   const page = parseInt(req.query.page) || 1;
-//   const limit = parseInt(req.query.limit) || 5;
-//   const sort = req.query.sort || "newest";
+app.get("/posts", async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  const sort = req.query.sort || "newest";
 
-//   const skip = (page - 1) * limit;
+  const skip = (page - 1) * limit;
 
-//   try {
-//     const pipeline = [];
+  try {
+    const pipeline = [];
 
-//     if (sort === "popular") {
-//       pipeline.push({
-//         $addFields: {
-//           voteDifference: { $subtract: ["$upVote", "$downVote"] },
-//         },
-//       });
-//       pipeline.push({ $sort: { voteDifference: -1 } });
-//     } else {
-//       pipeline.push({ $sort: { createdAt: -1 } });
-//     }
+    if (sort === "popular") {
+      pipeline.push({
+        $addFields: {
+          voteDifference: { $subtract: ["$upVote", "$downVote"] },
+        },
+      });
+      pipeline.push({ $sort: { voteDifference: -1 } });
+    } else {
+      pipeline.push({ $sort: { createdAt: -1 } });
+    }
 
-//     pipeline.push({ $skip: skip }, { $limit: limit });
+    pipeline.push({ $skip: skip }, { $limit: limit });
 
-//     const posts = await postsCollection.aggregate(pipeline).toArray();
-//     const totalItems = await postsCollection.countDocuments();
-//     const totalPages = Math.ceil(totalItems / limit);
+    const posts = await postsCollection.aggregate(pipeline).toArray();
+    const totalItems = await postsCollection.countDocuments();
+    const totalPages = Math.ceil(totalItems / limit);
 
-//     res.send({
-//       posts,
-//       totalItems,
-//       totalPages,
-//       currentPage: page,
-//     });
-//   } catch (error) {
-//     res.status(500).json({ error: "Failed to fetch posts" });
-//   }
-// });
+    res.send({
+      posts,
+      totalItems,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch posts" });
+  }
+});
 
 
 
