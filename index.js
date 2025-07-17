@@ -42,7 +42,7 @@ const postsCollection = myFocus.collection('posts');
  
 const verifyToken = (req, res, next) => {
   const token = req?.cookies?.token;
-  console.log(token,"ok");
+ 
   
   if (!token) {
     return res.status(401).send({ message: 'unauthorized access' })
