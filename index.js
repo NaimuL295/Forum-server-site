@@ -464,34 +464,34 @@ app.patch("/posts/:id/vote", async (req, res) => {
 // });
 
 // Add new comment
-// app.post("/comments", async (req, res) => {
-//   const comment = req.body;
-//   comment.createdAt = new Date();
-//   const result = await commentsCollection.insertOne(comment);
-//   res.send(result);
-// });
+app.post("/comments", async (req, res) => {
+  const comment = req.body;
+  comment.createdAt = new Date();
+  const result = await commentsCollection.insertOne(comment);
+  res.send(result);
+});
 
-// Report a comment
-// app.post("/comments/report/:commentId", async (req, res) => {
-//   const { commentId } = req.params;
-//   const { feedback } = req.body;
+Report a comment
+app.post("/comments/report/:commentId", async (req, res) => {
+  const { commentId } = req.params;
+  const { feedback } = req.body;
 
-//   const comment = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
-//   if (!comment) return res.status(404).json({ error: "Comment not found" });
+  const comment = await commentsCollection.findOne({ _id: new ObjectId(commentId) });
+  if (!comment) return res.status(404).json({ error: "Comment not found" });
 
-//   const report = {
-//     commentId,
-//     postId: comment.postId,
-//     email: comment.email,
-//     name: comment.name || null,
-//     feedback,
-//     reportedAt: new Date(),
-//     status: "pending"
-//   };
+  const report = {
+    commentId,
+    postId: comment.postId,
+    email: comment.email,
+    name: comment.name || null,
+    feedback,
+    reportedAt: new Date(),
+    status: "pending"
+  };
 
-//   const result = await reportsCollection.insertOne(report);
-//   res.send(result);
-// });
+  const result = await reportsCollection.insertOne(report);
+  res.send(result);
+});
 
 // Get all reported comments (admin)
 app.get("/reports-all", async (req, res) => {
