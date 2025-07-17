@@ -410,7 +410,7 @@ app.get("/usersAll", async (req, res) => {
     
     
     const users = await usersCollection.find({
-      displayName: { $regex: search, $options: "i" }
+     name: { $regex: search, $options: "i" }
     }).toArray();
     res.send(users);
     
@@ -431,11 +431,12 @@ app.patch("/users/admin/:id", async (req, res) => {
   res.send(result);
 });
 
-
-
-
-
-
+// Delete user
+app.delete("/users_to/:id", async (req, res) => {
+  const id = req.params.id;
+  const result = await usersCollection.deleteOne({ _id: new ObjectId(id) });
+  res.send(result);
+});
 
 
 
