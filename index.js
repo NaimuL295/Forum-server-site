@@ -388,15 +388,15 @@ app.post("/tags", async (req, res) => {
     res.status(500).json({ error: "Failed to add tag" });
   }
 });
-// app.get("/tags_list", async (req, res) => {
-//   try {
-//     const tags = await tagsCollection.find().toArray();
-//     res.status(200).json(tags);
-//   } catch (error) {
+app.get("/tags_list", async (req, res) => {
+  try {
+    const tags = await tagsCollection.find().toArray();
+    res.status(200).json(tags);
+  } catch (error) {
    
-//     res.status(500).json({ error: "Failed to fetch tags" });
-//   }
-// });
+    res.status(500).json({ error: "Failed to fetch tags" });
+  }
+});
 
 
 
