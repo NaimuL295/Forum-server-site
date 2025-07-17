@@ -263,13 +263,13 @@ const userPosts = await usersCollection.findOne(query)
  })
 
 
-// app.delete("/post_delate/:id",async(req,res)=>{
-//   const id=req.params.id
+app.delete("/post_delate/:id",async(req,res)=>{
+  const id=req.params.id
  
-//   const query={_id:new ObjectId(id)}
-//   const result =postsCollection.deleteOne(query)
-//   res.send(result)
-// })
+  const query={_id:new ObjectId(id)}
+  const result =postsCollection.deleteOne(query)
+  res.send(result)
+})
 
 
 
@@ -610,9 +610,6 @@ app.post("/user", async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
-
-
-
 
 
 
