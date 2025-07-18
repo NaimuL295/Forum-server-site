@@ -200,27 +200,40 @@ app.get("/announcements/count", async (req, res) => {
 
 
 
-app.get("/user_email",  async (req, res) => {
-  const { emailParams } = req.query;
-
-
-  
-  let query = {};
-  if (emailParams) {
-    query.email = { $regex: emailParams, $options: "i" }; // Case-insensitive search
-  }
-
-
+app.get("/user_email",verifyToken, async (req, res) => {
   try {
-    // Count the user posts matching the email query
+    const emailParams = req.query.emailParams?.trim(); // Clean input
+
+    // If emailParams is missing or empty, return 0
+    if (!emailParams) {
+      return res.json({ userPostsCount: 0 });
+    }
+
+    const query = {
+      email: { $regex: new RegExp(emailParams, "i") } // Case-insensitive regex match
+    };
+
     const userPostsCount = await postsCollection.countDocuments(query);
 
-    res.json({  userPostsCount });
+    res.json({ userPostsCount });
   } catch (error) {
-   
-    res.status(500).json({ error: "Failed to count user posts" });
+    console.error("Error in /user_email:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
+app.get('/tags_data', async (req, res) => {
+  try {
+    const tags = await tagsCollection.find().toArray();
+    res.status(200).json(tags);
+  } catch (error) {
+   
+    res.status(500).json({ error: 'Failed to fetch tags' });
+  }
+});
+
+
+
+
 
 
 
@@ -339,7 +352,7 @@ app.get("/users/:email/role" ,async (req, res) => {
   }
 });
 // check
-app.get("/users_/:email", verifyToken,verifyAdmin,  async (req, res) => {
+app.get("/users_/:email",  async (req, res) => {
   const email = req.params.email;
   console.log(email);
   
@@ -529,16 +542,6 @@ app.delete("/comments_remove/:commentId/:reportId", async (req, res) => {
 
 
 
-
-app.get('/tags_data', async (req, res) => {
-  try {
-    const tags = await tagsCollection.find().toArray();
-    res.status(200).json(tags);
-  } catch (error) {
-   
-    res.status(500).json({ error: 'Failed to fetch tags' });
-  }
-});
 
 
 
