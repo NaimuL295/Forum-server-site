@@ -12,7 +12,7 @@ const stripe = require('stripe')(process.env.PAYMENT_GATEWAY_KEY);
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({origin:["https://b11-assigment-12.netlify.app","http://localhost:5173", "http://localhost:5174",],
+app.use(cors({origin:["http://localhost:5173",  "https://s-forum-b.netlify.app"],
 credentials:true,}));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.y2b3ywc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
@@ -198,8 +198,6 @@ app.get("/announcements/count", async (req, res) => {
   }
 });
 
-
-
 app.get("/user_email",verifyToken, async (req, res) => {
   try {
     const emailParams = req.query.emailParams?.trim(); // Clean input
@@ -352,10 +350,9 @@ app.get("/users/:email/role" ,async (req, res) => {
   }
 });
 // check
-app.get("/users_/:email",  async (req, res) => {
-  const email = req.params.email;
-  console.log(email);
-  
+app.get("/users_/:email",async (req, res) => {
+  const {email} = req.params.email;
+
   try {
     const user = await usersCollection.findOne({ email });
     if (!user) return res.status(404).json({ error: "User not found" });
@@ -540,12 +537,6 @@ app.delete("/comments_remove/:commentId/:reportId", async (req, res) => {
 
 
 
-
-
-
-
-
-
 // Express route to get paginated + sorted posts
 app.get("/posts", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -586,37 +577,48 @@ app.get("/posts", async (req, res) => {
 });
 
 
+// Direct Login google
 
-
-app.post("/user", async (req, res) => {
-  
+app.post("/user_new", async (req, res) => {
   const user = req.body;
   const { email } = user;
+
   if (!email || !user.name || !user.photo) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-   
     const existingUser = await usersCollection.findOne({ email });
+
     if (existingUser) {
-      return res.status(409).json({ error: "User already exists" });
+      return res.json({
+        message: "Login successful",
+        user: existingUser
+      });
     }
 
-    // Insert user
     const result = await usersCollection.insertOne({
       ...user,
       badge: user.badge || "Bronze",
-      role: "user", 
+      role: "user",
       createdAt: new Date()
     });
 
-    res.status(201).json({ message: "User created successfully", insertedId: result.insertedId });
+    const newUser = await usersCollection.findOne({ _id: result.insertedId });
+
+
+    res.status(201).json({
+      message: "User created & logged in successfully",
+      user: newUser
+    });
+
   } catch (error) {
-    
+    console.error(error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+
 
 
 
