@@ -12,7 +12,7 @@ const stripe = require('stripe')(process.env.PAYMENT_GATEWAY_KEY);
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors({origin:["http://localhost:5173",  "https://s-forum-b.netlify.app"],
+app.use(cors({origin:["http://localhost:5173","https://s-forum-b.netlify.app"],
 credentials:true,}));
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.y2b3ywc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
